@@ -24,6 +24,10 @@ HELP = """
 some helptext
 """
 
+RE = {
+    'option': re.compile('\s*(.*) = (.*)  \(default')
+}
+
 def cstrip(text):
     return w.string_remove_color(text, '')
 
@@ -47,7 +51,10 @@ def save_conf(conf):
 
     while w.infolist_next(infolist):
         message = cstrip(w.infolist_string(infolist, 'message'))
-        f.write('%s \n' % message)
+        option = re.match(RE['option'], message)
+
+        if option:
+            f.write('/set %s %s\n' % (option.group(1), option.group(2)))
 
     w.infolist_free(infolist)
     f.close()
