@@ -36,11 +36,14 @@ def save_conf(conf):
 
     infolist = w.infolist_get('buffer_lines', '', '')
     version = w.info_get('version', '')
-
+    
     try:
         f = open(conf, 'w+')
-    except e:
-        w.prnt('error: %s' % e)
+
+    except Exception, e:
+        w.prnt('', '%sError: %s' % (w.prefix('error'), e))
+
+        return w.WEECHAT_RC_ERROR
 
     while w.infolist_next(infolist):
         message = cstrip(w.infolist_string(infolist, 'message'))
