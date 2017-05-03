@@ -6,6 +6,8 @@
 import os
 import re
 
+from fnmatch import fnmatch
+
 try:
     import weechat as w
 
@@ -19,6 +21,14 @@ AUTHOR      = "Manuel Koell <man.koell@gmail.com>"
 VERSION     = "0.1"
 LICENSE     = "GPL3"
 DESCRIPTION = "auto save changed options as commands for FIFO pipe"
+
+EXCLUDES = [
+    '*.nicks',
+    '*.username', '*.sasl_username',
+    '*.password', '*.sasl_password',
+    'irc.server.*.autoconnect',
+    'irc.server.*.autojoin'
+]
 
 HELP = """
 some helptext
@@ -54,10 +64,12 @@ def save_conf(conf):
         option = re.match(RE['option'], message)
 
         if option:
-            f.write('/set %s %s\n' % (option.group(1), option.group(2)))
+            if not any(fnmatch(option.group(1), p) for p in EXCLUDES):
+                f.write('/set %s %s\n' % (option.group(1), option.group(2)))
+
+    f.close()
 
     w.infolist_free(infolist)
-    f.close()
 
 def cmd_autoconf_cb(data, buffer, args):
 
