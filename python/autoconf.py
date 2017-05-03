@@ -47,6 +47,16 @@ RE = {
     'option': re.compile('\s*(.*) = (.*)  \(default')
 }
 
+
+def get_config(args):
+    
+    try:
+        conf = args[1]
+    except Exception:
+        conf = w.config_get_plugin('file')
+
+    return os.path.expanduser(conf)
+
 def cstrip(text):
     return w.string_remove_color(text, '')
 
@@ -61,7 +71,7 @@ def save_conf(conf):
     version = w.info_get('version', '')
     
     try:
-        f = open(conf, 'w+')
+        f = open(get_config(args), 'w+')
 
     except Exception, e:
         w.prnt('', '%sError: %s' % (w.prefix('error'), e))
@@ -83,13 +93,12 @@ def save_conf(conf):
 def cmd_autoconf_cb(data, buffer, args):
 
     args = args.split()
-    conf = os.path.expanduser('~/.weerc')
 
     if 'save' in args:
-        save_conf(conf)
+        save_conf(args)
 
     elif 'load' in args:
-        load_conf()
+        load_conf(args)
 
     else:
         w.command('', '/help ' + NAME)
