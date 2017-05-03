@@ -30,6 +30,15 @@ EXCLUDES = [
     'irc.server.*.autojoin'
 ]
 
+SETTINGS = {
+    'autosave': ('on', 'auto save config on quit'),
+    'autoload': ('on', 'auto load config on start'),
+    'ignore': (
+        ','.join(EXCLUDES), 
+        'comma separated list of patterns to exclude'),
+    'file': ('~/.weerc', 'config file location')
+}
+
 HELP = """
 some helptext
 """
@@ -92,4 +101,8 @@ if __name__ == '__main__':
     if w.register(NAME, AUTHOR, VERSION, LICENSE, DESCRIPTION, "", ""):
         w.hook_command(NAME, DESCRIPTION, 'save [path] || load [path]', HELP, 'save || load', 'cmd_autoconf_cb', '')
 
+        for option, value in SETTINGS.items():
+            if not w.config_is_set_plugin(option):
+                w.config_set_plugin(option, value[0])
+                w.config_set_desc_plugin(option, '%s  (default: "%s")' % (value[1], value[0]))
 
