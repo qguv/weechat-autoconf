@@ -78,6 +78,23 @@ def save_conf(conf):
 
         return w.WEECHAT_RC_ERROR
 
+    header = [
+        '#',
+        '# WeeChat %s (compiled on %s)' % (w.info_get('version', ''), w.info_get('date', '')),
+        '#',
+        '# Use /autoconf load or cat this file to the FIFO pipe.',
+        '#',
+        '# For more info, see https://weechat.org/scripts/source/autoconf.py.html',
+        '#', 
+        ''
+    ]
+
+    for ln in header:
+        f.write('%s\n' % ln)
+
+    w.command('', '/buffer clear')
+    w.command('', '/set diff')
+
     while w.infolist_next(infolist):
         message = cstrip(w.infolist_string(infolist, 'message'))
         option = re.match(RE['option'], message)
