@@ -63,13 +63,11 @@ def cstrip(text):
 def load_conf():
     pass
 
-def save_conf(conf):
-    w.command('', '/buffer clear')
-    w.command('', '/set diff')
+    if os.path.isfile(conf):
+        w.command('', '/exec -sh -norc cat %s > %s' % (conf, fifo))
 
-    infolist = w.infolist_get('buffer_lines', '', '')
-    version = w.info_get('version', '')
-    
+def save_conf(args=None):
+
     try:
         f = open(get_config(args), 'w+')
 
@@ -95,13 +93,16 @@ def save_conf(conf):
     w.command('', '/buffer clear')
     w.command('', '/set diff')
 
+    infolist = w.infolist_get('buffer_lines', '', '')
+
     while w.infolist_next(infolist):
         message = cstrip(w.infolist_string(infolist, 'message'))
+        ignore = w.config_get_plugin('ignore').split(',')
         option = re.match(RE['option'], message)
 
         if option:
-            if not any(fnmatch(option.group(1), p) for p in EXCLUDES):
-                f.write('/set %s %s\n' % (option.group(1), option.group(2)))
+            if not any(fnmatch(option.group(1), p) for p in ignore.strip()):
+                f.write('*/set %s %s\n' % (option.group(1), option.group(2)))
 
     f.close()
 
