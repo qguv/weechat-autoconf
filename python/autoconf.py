@@ -133,3 +133,10 @@ if __name__ == '__main__':
                 w.config_set_plugin(option, value[0])
                 w.config_set_desc_plugin(option, '%s  (default: "%s")' % (value[1], value[0]))
 
+        if 'on' in w.config_get_plugin('autoload'):
+            load_conf(None)
+
+        if 'on' in w.config_get_plugin('autosave'):
+            w.hook_signal('quit', 'save_conf', '')
+
+
