@@ -92,8 +92,7 @@ def cmd_autoconf_cb(data, buffer, args):
         load_conf()
 
     else:
-        # w.command('', '/help ' + NAME)
-        pass
+        w.command('', '/help ' + NAME)
 
     return w.WEECHAT_RC_OK
 
