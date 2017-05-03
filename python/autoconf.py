@@ -67,7 +67,7 @@ def load_conf(args):
     if os.path.isfile(conf):
         w.command('', '/exec -sh -norc cat %s > %s' % (conf, fifo))
 
-def save_conf(args=None):
+def save_conf(args):
 
     try:
         f = open(get_config(args), 'w+')
@@ -109,7 +109,7 @@ def save_conf(args=None):
 
     w.infolist_free(infolist)
 
-def cmd_autoconf_cb(data, buffer, args):
+def autoconf_cb(data, buffer, args):
 
     args = args.split()
 
@@ -124,9 +124,14 @@ def cmd_autoconf_cb(data, buffer, args):
 
     return w.WEECHAT_RC_OK
 
+def quit_cb(data, signal, signal_data):
+    save_conf(None)
+
+    return w.WEECHAT_RC_OK
+
 if __name__ == '__main__':
     if w.register(NAME, AUTHOR, VERSION, LICENSE, DESCRIPTION, "", ""):
-        w.hook_command(NAME, DESCRIPTION, 'save [path] || load [path]', HELP, 'save || load', 'cmd_autoconf_cb', '')
+        w.hook_command(NAME, DESCRIPTION, 'save [path] || load [path]', HELP, 'save || load', 'autoconf_cb', '')
 
         for option, value in SETTINGS.items():
             if not w.config_is_set_plugin(option):
@@ -137,6 +142,6 @@ if __name__ == '__main__':
             load_conf(None)
 
         if 'on' in w.config_get_plugin('autosave'):
-            w.hook_signal('quit', 'save_conf', '')
+            w.hook_signal('quit', 'quit_cb', '')
 
 
