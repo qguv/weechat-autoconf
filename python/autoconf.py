@@ -60,8 +60,9 @@ def get_config(args):
 def cstrip(text):
     return w.string_remove_color(text, '')
 
-def load_conf():
-    pass
+def load_conf(args):
+    fifo = w.info_get('fifo_filename', '')
+    conf = get_config(args)
 
     if os.path.isfile(conf):
         w.command('', '/exec -sh -norc cat %s > %s' % (conf, fifo))
