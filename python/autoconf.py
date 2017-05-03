@@ -102,7 +102,7 @@ def save_conf(args=None):
         option = re.match(RE['option'], message)
 
         if option:
-            if not any(fnmatch(option.group(1), p) for p in ignore.strip()):
+            if not any(fnmatch(option.group(1), p.strip()) for p in ignore):
                 f.write('*/set %s %s\n' % (option.group(1), option.group(2)))
 
     f.close()
