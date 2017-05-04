@@ -48,7 +48,13 @@ RE = {
 }
 
 
+def cstrip(text):
+    """strip color codes"""
+
+    return w.string_remove_color(text, '')
+
 def get_config(args):
+    """get path to config file"""
     
     try:
         conf = args[1]
@@ -57,10 +63,9 @@ def get_config(args):
 
     return os.path.expanduser(conf)
 
-def cstrip(text):
-    return w.string_remove_color(text, '')
-
 def load_conf(args):
+    """send config to fifo pipe"""
+
     fifo = w.info_get('fifo_filename', '')
     conf = get_config(args)
 
@@ -68,6 +73,7 @@ def load_conf(args):
         w.command('', '/exec -sh -norc cat %s > %s' % (conf, fifo))
 
 def save_conf(args):
+    """match options and save to config file"""
 
     try:
         f = open(get_config(args), 'w+')
@@ -110,6 +116,7 @@ def save_conf(args):
     w.infolist_free(infolist)
 
 def autoconf_cb(data, buffer, args):
+    """the /autoconf command"""
 
     args = args.split()
 
@@ -120,11 +127,14 @@ def autoconf_cb(data, buffer, args):
         load_conf(args)
 
     else:
+        # show help message
         w.command('', '/help ' + NAME)
 
     return w.WEECHAT_RC_OK
 
 def quit_cb(data, signal, signal_data):
+    """save config on quit"""
+
     save_conf(None)
 
     return w.WEECHAT_RC_OK
@@ -133,6 +143,7 @@ if __name__ == '__main__':
     if w.register(NAME, AUTHOR, VERSION, LICENSE, DESCRIPTION, "", ""):
         w.hook_command(NAME, DESCRIPTION, 'save [path] || load [path]', HELP, 'save || load', 'autoconf_cb', '')
 
+        # set default config
         for option, value in SETTINGS.items():
             if not w.config_is_set_plugin(option):
                 w.config_set_plugin(option, value[0])
