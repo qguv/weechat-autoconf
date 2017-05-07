@@ -14,7 +14,7 @@ Once the script is [approved](https://weechat.org/scripts/pending/), it will be 
 
 ## Ignore
 
-Usually you want to make sure to exclude sensitive information such as nicks, usernames, passwords and the like. Thus the config file ignores the following default patterns:
+Usually you want to make sure to exclude sensitive information such as nicks, usernames, passwords and the like. Thus it ignores the following patterns by default:
 
 ```
 *.nicks,
